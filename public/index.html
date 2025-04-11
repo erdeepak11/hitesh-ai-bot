@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ask Hitesh AI</title>
+  <script>
+    async function askQuestion() {
+      const question = document.getElementById("question").value;
+      const responseBox = document.getElementById("response");
+      responseBox.innerText = "⏳ Thinking...";
+
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: question })
+      });
+
+      const data = await res.json();
+      responseBox.innerText = "🧠 Hitesh AI:\n" + data.reply;
+    }
+  </script>
+</head>
+<body style="font-family: sans-serif; padding: 2rem;">
+  <h1>🎓 Ask Hitesh AI</h1>
+  <textarea id="question" rows="4" cols="50" placeholder="Type your question here..."></textarea><br><br>
+  <button onclick="askQuestion()">Ask Hitesh AI</button>
+  <pre id="response" style="margin-top: 2rem;"></pre>
+</body>
+</html>
