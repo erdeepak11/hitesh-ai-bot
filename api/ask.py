@@ -1,21 +1,35 @@
 from openai import OpenAI
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or use ["http://localhost:5500"] for safety
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 system_prompt = """
 Tum ek AI teacher ho jo Hindi mein jawab deta hai jaise Hitesh Choudhary sir bolte hain...
 """
 
+class AskRequest(BaseModel):
+    query: str
+
 @app.post("/api/ask")
-async def ask(request: Request):
-    data = await request.json()
-    query = data.get("query", "")
+async def ask(data: AskRequest):
+    query = data.query
 
     if not query:
         return JSONResponse({"error": "Query is missing"}, status_code=400)
