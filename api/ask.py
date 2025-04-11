@@ -14,7 +14,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or use ["http://localhost:5500"] for safety
+    allow_origins=["https://hitesh-ai-bot.vercel.app/"],  # Or use ["http://localhost:5500"] for safety
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
