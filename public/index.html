@@ -47,7 +47,7 @@
       responseBox.innerText = "⏳ Thinking...";
 
       try {
-        const res = await fetch("https://hitesh-ai-backend.onrender.com", {
+        const res = await fetch("https://hitesh-ai-backend.onrender.com/api/ask", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: question })
