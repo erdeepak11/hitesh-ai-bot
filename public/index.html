@@ -1,28 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ask Hitesh AI</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    textarea {
+      width: 100%;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      background-color: #2f80ed;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    pre {
+      margin-top: 2rem;
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
   <script>
     async function askQuestion() {
-      const question = document.getElementById("question").value;
+      const question = document.getElementById("question").value.trim();
       const responseBox = document.getElementById("response");
+
+      if (!question) {
+        responseBox.innerText = "❗ Please enter a question.";
+        return;
+      }
+
       responseBox.innerText = "⏳ Thinking...";
 
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: question })
-      });
+      try {
+        const res = await fetch("http://localhost:8000/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: question })
+        });
 
-      const data = await res.json();
-      responseBox.innerText = "🧠 Hitesh AI:\n" + data.reply;
+        if (!res.ok) {
+          throw new Error("Server error");
+        }
+
+        const data = await res.json();
+        responseBox.innerText = "🧠 Hitesh AI:\n" + data.reply;
+      } catch (err) {
+        responseBox.innerText = "❌ Error: " + err.message;
+      }
     }
   </script>
 </head>
-<body style="font-family: sans-serif; padding: 2rem;">
+<body>
   <h1>🎓 Ask Hitesh AI</h1>
-  <textarea id="question" rows="4" cols="50" placeholder="Type your question here..."></textarea><br><br>
+  <textarea id="question" rows="4" placeholder="Type your question here..."></textarea><br><br>
   <button onclick="askQuestion()">Ask Hitesh AI</button>
-  <pre id="response" style="margin-top: 2rem;"></pre>
+  <pre id="response"></pre>
 </body>
 </html>
